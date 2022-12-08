@@ -89,11 +89,11 @@ public class WorldCup{
     func createGruops(){
         
         var gruops = generateGroups()
+        var characterGruopName = ["A", "B", "C", "D", "E", "F", "G", "H"]
+        var rangeForCharacterGruopName: Range = 0..<gruops.count
         
         for gruop in gruops {
           
-            var rangeForCharacterGruopName: Range = 0..<gruops.count
-            var characterGruopName = ["A", "B", "C", "D", "E", "F", "G", "H"]
             var randomCharacter = characterGruopName[rangeForCharacterGruopName].randomElement()
             var indexCharacter = characterGruopName.firstIndex(of: randomCharacter ?? "" )
             characterGruopName.remove(at: indexCharacter!)
@@ -119,7 +119,7 @@ public class Groups{
     }
     
     func showGruops(){
-        var result = listingTeams.map({$0.countryTeam})
+        var result = listingTeams.map({String(describing: $0.countryTeam) })
         print("Grupo \(groupName), participantes: \(result)")
     }
 }

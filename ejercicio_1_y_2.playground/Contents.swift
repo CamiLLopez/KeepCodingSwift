@@ -1,11 +1,9 @@
 import UIKit
 
-func getPrimes: (arrayPosition: Int) -> [Int] = {
+func getPrimes (arrayPosition: Int) -> [Int] {
     
      let firstPrime = 2
-     guard rangeEndPosition >= firstPrime else {
-         fatalError("End of range has to be greater than or equal to \(firstPrime)!")
-     }
+     
      var numbers = Array(firstPrime...arrayPosition)
 
      var currentPrimeIndex = 0
@@ -25,7 +23,7 @@ func getPrimes: (arrayPosition: Int) -> [Int] = {
      return numbers
     }
     else if numbers.count > 100{
-        let firstHundredPrimes = Array(numbers[0...99]
+        let firstHundredPrimes = Array(numbers[0...99])
         return firstHundredPrimes
     }
 
@@ -33,26 +31,30 @@ func getPrimes: (arrayPosition: Int) -> [Int] = {
     
 }
                                        
-func printLastTenPrimes: (primesArray: [Int]) = {
+func printLastTenPrimes(primesArray: [Int]) {
         
-            let primesReversed: [Int] = primesArray.reversed()
+    let primesReversed: [Int] = primesArray.reversed()
             
-            print primesReversed[0..9]
+    print(primesReversed[0...9])
 }
                                        
 //Ejercicio 2) sumar los primeros 50 numeros primos
 
-func sumPrimesNumbers: (primesArray: [Int]) = {
+func sumPrimesNumbers(primesArray: [Int]) -> Int {
 
-    let firstFiftyPrimes = Array(numbers[0...49]
-    var sumPrimes = firstFiftyPrimes.reduce($0, +)
-    print(sumPrimes)
-            
+    var firstFiftyPrimes = Array(primesArray[0...49])
+    var sumPrimes: Int = firstFiftyPrimes.reduce(0, +)
+
+    return sumPrimes
 }
-let getRandomPrimes = getPrimes(arrayPosition: 500)
+                                 
+                                 
+let getRandomPrimes = getPrimes(arrayPosition: 600)
 printLastTenPrimes(primesArray: getRandomPrimes)
 sumPrimesNumbers(primesArray: getRandomPrimes)
  
  
  
+
+
 

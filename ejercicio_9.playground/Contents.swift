@@ -26,7 +26,7 @@ public class WorldCupParticipant {
 public class WorldCupTeam {
     var statusEliminated: Bool
     var membersCountrTeam: [WorldCupParticipant]
-    var points: Int = 0
+    var totalPoints: Int = 0
     
     enum ParticipatedCountries {
         case Qatar, Ecuador, Senegal, Netherlands, England, Iran, UnitedStates, Wales, Argentina, SaudiArabia, Mexico, Poland, France, Australia, Denmark, Tunisia,Spain, CostaRica, Germany, Japan, Belgium, Canada, Morocco, Croatia, Brazil, Serbia, Switzerland, Cameroon, Portugal, Ghana, Uruguay, SouthKorea
@@ -126,7 +126,7 @@ public class Groups{
     }
     
     func getPoints(wordCupTeam: WorldCupTeam) -> Int {
-        
+        return wordCupTeam.totalPoints
     }
 }
 
@@ -151,16 +151,16 @@ public class Game{
     func calculateResults() {
         
         if (game.totalGoalVisitTeam == game.totalGoalLocalTeam){
-            localTeam.points += 1
-            visitTeam.points += 1
+            localTeam.totalPoints += 1
+            visitTeam.totalPoints += 1
         }
         else if (game.totalGoalVisitTeam > game.totalGoalLocalTeam){
-            visitTeam.points += 3
-            localTeam.points += 0
+            visitTeam.totalPoints += 3
+            localTeam.totalPoints += 0
         }
         else if(game.totalGoalVisitTeam < game.totalGoalLocalTeam)
-            visitTeam.points += 0
-            localTeam.points += 3
+            visitTeam.totalPoints += 0
+            localTeam.totalPoints += 3
     }
     
 }
@@ -168,9 +168,9 @@ public class Game{
 public class GameManager {
     
     
-    private func parGames(teamsForGame: [WorldCupTeam]) -> [[WorldCupTeam]]{
+    private func parGames(teamsForGameInGruop: [Group]) -> [[WorldCupTeam]]{
     
-       var teamsForRaffle = teamsForGame
+       var teamsForRaffle = teamsForGameInGruop
        var game: [[WorldCupTeam]] = []
        var partialGame: [WorldCupTeam] = []
        
@@ -190,9 +190,9 @@ public class GameManager {
     }
     
     
-    func playRandomGames (wordCupTeams: WorldCup) {
+    func playRandomGames (wordCupTeams: Group) {
         
-        let teams = wordCupTeams.countryTeams
+        let teams = wordCupTeams.
         
         var games = parGames(teamsForGame: teams)
         
@@ -245,8 +245,6 @@ let englandTeam = WorldCupTeam(countryTeam: .England, statusEliminated: false, m
 let wordCup = WorldCup(countryTeams: [argentinaTeam,brazilTeam,portugalTeam,spainTeam,switzerlandTeam,polandTeam,englandTeam,costaRicaTeam])
 
 
-let game = GameManager()
-game.playRandomGames(wordCupTeams: wordCup)
 
 wordCup.createGruops()
 

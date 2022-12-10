@@ -25,7 +25,7 @@ public class WorldCupParticipant {
 
 public class WorldCupTeam {
     var statusEliminated: Bool
-    var membersCountrTeam: [WorldCupParticipant]
+    var membersCountryTeam: [WorldCupParticipant]
     var totalPoints: Int = 0
     
     enum ParticipatedCountries {
@@ -34,14 +34,14 @@ public class WorldCupTeam {
     
     private(set) var countryTeam: ParticipatedCountries
     
-    init(countryTeam: ParticipatedCountries, statusEliminated: Bool, membersCountrTeam: [WorldCupParticipant]){
+    init(countryTeam: ParticipatedCountries, statusEliminated: Bool, membersCountryTeam: [WorldCupParticipant]){
         self.countryTeam = countryTeam
         self.statusEliminated = statusEliminated
-        self.membersCountrTeam = membersCountrTeam
+        self.membersCountryTeam = membersCountryTeam
     }
     
     func showMemberDetails(){
-        for team in membersCountrTeam {
+        for team in membersCountryTeam {
             print("\(team.fullName), rol: \(team.rollType)")
         }
     }
@@ -51,6 +51,7 @@ public class WorldCupTeam {
 public class WorldCup{
     
     private(set) var countryTeams: [WorldCupTeam]
+    private(set) var gruopsList: [Groups] = []
     
     init(countryTeams: [WorldCupTeam]){
         self.countryTeams = countryTeams
@@ -87,47 +88,51 @@ public class WorldCup{
         return gruops
     }
     
-    func createGruops(){
+    func createGruops() -> [Groups] {
         
         var gruops = generateGroups()
+        var totalGruops: [Groups] = []
+        var rangeForCharacterGruopName: Range = 0..<gruops.count
+        var characterGruopName = ["A", "B", "C", "D", "E", "F", "G", "H"]
         
         for gruop in gruops {
           
-            var rangeForCharacterGruopName: Range = 0..<gruops.count
-            var characterGruopName = ["A", "B", "C", "D", "E", "F", "G", "H"]
             var randomCharacter = characterGruopName[rangeForCharacterGruopName].randomElement()
             var indexCharacter = characterGruopName.firstIndex(of: randomCharacter ?? "" )
             characterGruopName.remove(at: indexCharacter!)
             
-            var particularGruop = Groups(groupName: randomCharacter ?? "", listingTeams: gruop, listingGames: )
+            var particularGruop = Groups(groupName: randomCharacter ?? "", listingTeams: gruop)
             
             particularGruop.showGruops()
-            
+            totalGruops.append(particularGruop)
+            gruopsList.append(particularGruop)
         }
+        
+        return totalGruops
     }
-    
+ 
 }
 
 public class Groups{
     
     private(set) var groupName: String
     private(set) var listingTeams: [WorldCupTeam]
-    private(set) var listingGames: [Game]?
+    var listingGames: [Game]?
     
-    init(groupName: String, listingTeams: [WorldCupTeam], listingGames: [Game]) {
+    init(groupName: String, listingTeams: [WorldCupTeam]) {
         self.groupName = groupName
         self.listingTeams = listingTeams
-        self.listingGame = listingGames
     }
     
     func showGruops(){
-        var result = listingTeams.map({$0.countryTeam})
+        var result = listingTeams.map({String(describing: $0.countryTeam) })
         print("Grupo \(groupName), participantes: \(result)")
     }
     
-    func getPoints(wordCupTeam: WorldCupTeam) -> Int {
-        return wordCupTeam.totalPoints
+    func getPoints(wordCupTeam: WorldCupTeam) -> String {
+        return "La seleccion de \(wordCupTeam.countryTeam) tiene \(wordCupTeam.totalPoints) puntos totales"
     }
+    
 }
 
 public class Game{
@@ -146,106 +151,113 @@ public class Game{
     
     func showResults (game: Game){
         print("Partido: \(game.visitTeam.countryTeam) \(game.totalGoalVisitTeam)-\(game.totalGoalLocalTeam) \(game.localTeam.countryTeam)")
+        game.calculateResults()
     }
     
-    func calculateResults() {
+    private func calculateResults() {
         
-        if (game.totalGoalVisitTeam == game.totalGoalLocalTeam){
+        if (totalGoalVisitTeam == totalGoalLocalTeam){
             localTeam.totalPoints += 1
             visitTeam.totalPoints += 1
         }
-        else if (game.totalGoalVisitTeam > game.totalGoalLocalTeam){
+        else if (totalGoalVisitTeam > totalGoalLocalTeam){
             visitTeam.totalPoints += 3
             localTeam.totalPoints += 0
         }
-        else if(game.totalGoalVisitTeam < game.totalGoalLocalTeam)
+        else if(totalGoalVisitTeam < totalGoalLocalTeam){
             visitTeam.totalPoints += 0
             localTeam.totalPoints += 3
+        }
+        
     }
-    
 }
 
 public class GameManager {
     
     
-    private func parGames(teamsForGameInGruop: [Group]) -> [[WorldCupTeam]]{
+    private func parGames(teamsForGameInGruop: [WorldCupTeam]) -> [[WorldCupTeam]]{
     
-       var teamsForRaffle = teamsForGameInGruop
-       var game: [[WorldCupTeam]] = []
-       var partialGame: [WorldCupTeam] = []
        
-       while teamsForRaffle.count != 0 {
+       let gruopGamesIndex: [[Int]] = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]]
+       var game: [[WorldCupTeam]] = []
+       
         
-           var randomInt = Int.random(in: 0..<(teamsForRaffle.count))
-           partialGame.append(teamsForRaffle[randomInt])
-           teamsForRaffle.remove(at: randomInt)
+        for index in gruopGamesIndex {
            
-           if partialGame.count == 2 {
-               game.append(partialGame)
-               partialGame.removeAll()
-           }
-       }
-        
+            var partialGame: [WorldCupTeam] = []
+            var equipoA = index[0]
+            var equipoB = index[1]
+            
+            partialGame.append(teamsForGameInGruop[equipoA])
+            partialGame.append(teamsForGameInGruop[equipoB])
+            
+            game.append(partialGame)
+        }
         return game
     }
     
     
-    func playRandomGames (wordCupTeams: Group) {
+    func playGames (wordCupTeams: [Groups]) {
         
-        let teams = wordCupTeams.
-        
-        var games = parGames(teamsForGame: teams)
-        
-        for game in games{
-          
-            var localGoals = Int.random(in: 0..<10)
-            var visitGoals = Int.random(in: 0..<10)
+        for gruop in wordCupTeams{
+            let gamesForGruop = parGames(teamsForGameInGruop: gruop.listingTeams)
             
-            var particularMatch = Game(localteam: game[0], visitTeam: game[1], totalGoalLocalTeam: localGoals, totalGoalVisitTeam: visitGoals)
-            
-            particularMatch.showResults(game: particularMatch)
-            
+            for game in gamesForGruop{
+             
+                var localGoals = Int.random(in: 0..<10)
+                var visitGoals = Int.random(in: 0..<10)
+                
+                var particularMatch = Game(localteam: game[0], visitTeam: game[1], totalGoalLocalTeam: localGoals, totalGoalVisitTeam: visitGoals)
+                
+                particularMatch.showResults(game: particularMatch)
+            }
         }
     }
 }
 
-let participant_1 = WorldCupParticipant(fullName: "Leo Messi", countryTeam: "Argentina", rollType: .footballPlayer)
-let participant_2 = WorldCupParticipant(fullName: "Lionel Scaloni", countryTeam: "Argentina", rollType: .coach)
-let participant_3 = WorldCupParticipant(fullName: "Pablo Aimar", countryTeam: "Argentina", rollType: .technicalTeam)
-let participant_4 = WorldCupParticipant(fullName: "Dani Alves", countryTeam: "Brazil", rollType: .footballPlayer)
-let participant_5 = WorldCupParticipant(fullName: "Neymar", countryTeam: "Brazil", rollType: .footballPlayer)
-let participant_6 = WorldCupParticipant(fullName: "Adenor Leonardo Bacchi", countryTeam: "Brazil", rollType: .coach)
-let participant_7 = WorldCupParticipant(fullName: "Cristiano Ronaldo", countryTeam: "Portugal", rollType: .footballPlayer)
-let participant_8 = WorldCupParticipant(fullName: "Diego Costa", countryTeam: "Portugal", rollType: .footballPlayer)
-let participant_9 = WorldCupParticipant(fullName: "Fernando Manuel Costa Santos", countryTeam: "Portugal", rollType: .coach)
-let participant_10 = WorldCupParticipant(fullName: "Luis Enrique", countryTeam: "Spain", rollType: .coach)
-let participant_11 = WorldCupParticipant(fullName: "Jordi Alba", countryTeam: "Spain", rollType: .footballPlayer)
-let participant_12 = WorldCupParticipant(fullName: "Robert Sanchez", countryTeam: "Spain", rollType: .footballPlayer)
-let participant_13 = WorldCupParticipant(fullName: "Leo Messi", countryTeam: "Swiss", rollType: .footballPlayer)
-let participant_14 = WorldCupParticipant(fullName: "Lionel Scaloni", countryTeam: "Swiss", rollType: .coach)
-let participant_15 = WorldCupParticipant(fullName: "Pablo Aimar", countryTeam: "Swiss", rollType: .technicalTeam)
-let participant_16 = WorldCupParticipant(fullName: "Dani Alves", countryTeam: "Costa Rica", rollType: .footballPlayer)
-let participant_17 = WorldCupParticipant(fullName: "Neymar", countryTeam: "Costa Rica", rollType: .footballPlayer)
-let participant_18 = WorldCupParticipant(fullName: "Adenor Leonardo Bacchi", countryTeam: "Costa Rica", rollType: .coach)
-let participant_19 = WorldCupParticipant(fullName: "Cristiano Ronaldo", countryTeam: "Poland", rollType: .footballPlayer)
-let participant_20 = WorldCupParticipant(fullName: "Diego Costa", countryTeam: "Poland", rollType: .footballPlayer)
-let participant_21 = WorldCupParticipant(fullName: "Fernando Manuel Costa Santos", countryTeam: "Poland", rollType: .coach)
-let participant_22 = WorldCupParticipant(fullName: "Luis Enrique", countryTeam: "England", rollType: .coach)
-let participant_23 = WorldCupParticipant(fullName: "Jordi Alba", countryTeam: "England", rollType: .footballPlayer)
-let participant_24 = WorldCupParticipant(fullName: "Robert Sanchez", countryTeam: "England", rollType: .footballPlayer)
+var participant_1 = WorldCupParticipant(fullName: "Leo Messi", countryTeam: "Argentina", rollType: .footballPlayer)
+var participant_2 = WorldCupParticipant(fullName: "Lionel Scaloni", countryTeam: "Argentina", rollType: .coach)
+var participant_3 = WorldCupParticipant(fullName: "Pablo Aimar", countryTeam: "Argentina", rollType: .technicalTeam)
+var participant_4 = WorldCupParticipant(fullName: "Dani Alves", countryTeam: "Brazil", rollType: .footballPlayer)
+var participant_5 = WorldCupParticipant(fullName: "Neymar", countryTeam: "Brazil", rollType: .footballPlayer)
+var participant_6 = WorldCupParticipant(fullName: "Adenor Leonardo Bacchi", countryTeam: "Brazil", rollType: .coach)
+var participant_7 = WorldCupParticipant(fullName: "Cristiano Ronaldo", countryTeam: "Portugal", rollType: .footballPlayer)
+var participant_8 = WorldCupParticipant(fullName: "Diego Costa", countryTeam: "Portugal", rollType: .footballPlayer)
+var participant_9 = WorldCupParticipant(fullName: "Fernando Manuel Costa Santos", countryTeam: "Portugal", rollType: .coach)
+var participant_10 = WorldCupParticipant(fullName: "Luis Enrique", countryTeam: "Spain", rollType: .coach)
+var participant_11 = WorldCupParticipant(fullName: "Jordi Alba", countryTeam: "Spain", rollType: .footballPlayer)
+var participant_12 = WorldCupParticipant(fullName: "Robert Sanchez", countryTeam: "Spain", rollType: .footballPlayer)
+var participant_13 = WorldCupParticipant(fullName: "Leo Messi", countryTeam: "Swiss", rollType: .footballPlayer)
+var participant_14 = WorldCupParticipant(fullName: "Lionel Scaloni", countryTeam: "Swiss", rollType: .coach)
+var participant_15 = WorldCupParticipant(fullName: "Pablo Aimar", countryTeam: "Swiss", rollType: .technicalTeam)
+var participant_16 = WorldCupParticipant(fullName: "Dani Alves", countryTeam: "Costa Rica", rollType: .footballPlayer)
+var participant_17 = WorldCupParticipant(fullName: "Neymar", countryTeam: "Costa Rica", rollType: .footballPlayer)
+var participant_18 = WorldCupParticipant(fullName: "Adenor Leonardo Bacchi", countryTeam: "Costa Rica", rollType: .coach)
+var participant_19 = WorldCupParticipant(fullName: "Cristiano Ronaldo", countryTeam: "Poland", rollType: .footballPlayer)
+var participant_20 = WorldCupParticipant(fullName: "Diego Costa", countryTeam: "Poland", rollType: .footballPlayer)
+var participant_21 = WorldCupParticipant(fullName: "Fernando Manuel Costa Santos", countryTeam: "Poland", rollType: .coach)
+var participant_22 = WorldCupParticipant(fullName: "Luis Enrique", countryTeam: "England", rollType: .coach)
+var participant_23 = WorldCupParticipant(fullName: "Jordi Alba", countryTeam: "England", rollType: .footballPlayer)
+var participant_24 = WorldCupParticipant(fullName: "Robert Sanchez", countryTeam: "England", rollType: .footballPlayer)
 
-let argentinaTeam = WorldCupTeam(countryTeam: .Argentina, statusEliminated: false , membersCountrTeam: [participant_1,participant_2,participant_3])
-let brazilTeam = WorldCupTeam(countryTeam: .Brazil, statusEliminated: false, membersCountrTeam: [participant_4,participant_5,participant_6])
-let portugalTeam = WorldCupTeam(countryTeam: .Portugal, statusEliminated: false, membersCountrTeam: [participant_7,participant_8,participant_9])
-let spainTeam = WorldCupTeam(countryTeam: .Spain, statusEliminated: false, membersCountrTeam: [participant_10,participant_11,participant_12])
-let switzerlandTeam = WorldCupTeam(countryTeam: .Switzerland, statusEliminated: false , membersCountrTeam: [participant_14,participant_13,participant_15])
-let costaRicaTeam = WorldCupTeam(countryTeam: .CostaRica, statusEliminated: false, membersCountrTeam: [participant_16,participant_17,participant_18])
-let polandTeam = WorldCupTeam(countryTeam: .Poland, statusEliminated: false, membersCountrTeam: [participant_19,participant_20,participant_21])
-let englandTeam = WorldCupTeam(countryTeam: .England, statusEliminated: false, membersCountrTeam: [participant_22,participant_23,participant_24])
+    
+    
+let argentinaTeam = WorldCupTeam(countryTeam: .Argentina, statusEliminated: false , membersCountryTeam:[participant_1,participant_2,participant_3])
+let brazilTeam = WorldCupTeam(countryTeam: .Brazil, statusEliminated: false, membersCountryTeam: [participant_4,participant_5,participant_6])
+let portugalTeam = WorldCupTeam(countryTeam: .Portugal, statusEliminated: false, membersCountryTeam: [participant_7,participant_8,participant_9])
+let spainTeam = WorldCupTeam(countryTeam: .Spain, statusEliminated: false, membersCountryTeam: [participant_10,participant_11,participant_12])
+let switzerlandTeam = WorldCupTeam(countryTeam: .Switzerland, statusEliminated: false , membersCountryTeam: [participant_14,participant_13,participant_15])
+let costaRicaTeam = WorldCupTeam(countryTeam: .CostaRica, statusEliminated: false, membersCountryTeam: [participant_16,participant_17,participant_18])
+let polandTeam = WorldCupTeam(countryTeam: .Poland, statusEliminated: false, membersCountryTeam: [participant_19,participant_20,participant_21])
+let englandTeam = WorldCupTeam(countryTeam: .England, statusEliminated: false, membersCountryTeam: [participant_22,participant_23,participant_24])
+    
+    
+    
 let wordCup = WorldCup(countryTeams: [argentinaTeam,brazilTeam,portugalTeam,spainTeam,switzerlandTeam,polandTeam,englandTeam,costaRicaTeam])
 
 
 
-wordCup.createGruops()
-
-
+var gruopsWordCup = wordCup.createGruops()
+var newGames = GameManager()
+newGames.playGames(wordCupTeams: gruopsWordCup)
+gruopsWordCup[0].getPoints(wordCupTeam: portugalTeam)

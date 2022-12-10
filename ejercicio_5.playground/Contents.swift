@@ -28,3 +28,4 @@ let participant_2 = WorldCupParticipant(fullName: "Lionel Scaloni", countryTeam:
 let participant_3 = WorldCupParticipant(fullName: "Pablo Aimar", countryTeam: "Argentina", rollType: .technicalTeam)
 
 print(participant_1.fullName)
+print(participant_2.fullName)

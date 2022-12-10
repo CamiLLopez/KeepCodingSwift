@@ -224,8 +224,5 @@ let englandTeam = WorldCupTeam(countryTeam: .England, statusEliminated: false, m
 let wordCup = WorldCup(countryTeams: [argentinaTeam,brazilTeam,portugalTeam,spainTeam,switzerlandTeam,polandTeam,englandTeam,costaRicaTeam])
 
 
-//let game = GameManager()
-//game.playRandomGames(wordCupTeams: wordCup)
-
 wordCup.createGruops()
 

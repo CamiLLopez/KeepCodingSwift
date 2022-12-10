@@ -260,4 +260,5 @@ let wordCup = WorldCup(countryTeams: [argentinaTeam,brazilTeam,portugalTeam,spai
 var gruopsWordCup = wordCup.createGruops()
 var newGames = GameManager()
 newGames.playGames(wordCupTeams: gruopsWordCup)
-gruopsWordCup[0].getPoints(wordCupTeam: portugalTeam)
+print(gruopsWordCup[0].getPoints(wordCupTeam: portugalTeam))
+print(gruopsWordCup[0].getPoints(wordCupTeam: argentinaTeam))

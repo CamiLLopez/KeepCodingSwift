@@ -56,7 +56,7 @@ public class WorldCup{
     
     func showTeamDetails(){
         for team in countryTeams{
-            print("/nTeam of: \(team.countryTeam)")
+            print("\nTeam of: \(team.countryTeam)")
             team.showMemberDetails()
         }
     }

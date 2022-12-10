@@ -1,5 +1,6 @@
 import UIKit
 
+
 public class WorldCupParticipant {
     private(set) var fullName: String
     private(set) var age: Int?
@@ -64,27 +65,28 @@ public class WorldCup{
         }
     }
     
-    private func generateGroups() -> [[WorldCupTeam]] {
+    private func generateGroups() -> [[WorldCupTeam]]  {
         
         var teamsForGruop = countryTeams
         var gruops: [[WorldCupTeam]] = []
         var partialGruop: [WorldCupTeam] = []
         
-        
-        if (countryTeams.count % 4 == 0 ){
+            if (countryTeams.count % 4 == 0 ){
                 
-            while teamsForGruop.count != 0 {
-                
-                var randomInt = Int.random(in: 0..<(teamsForGruop.count))
-                partialGruop.append(teamsForGruop[randomInt])
-                teamsForGruop.remove(at: randomInt)
-                
-                if partialGruop.count == 4 {
-                    gruops.append(partialGruop)
-                    partialGruop.removeAll()
+                while teamsForGruop.count != 0 {
+                    
+                    var randomInt = Int.random(in: 0..<(teamsForGruop.count))
+                    partialGruop.append(teamsForGruop[randomInt])
+                    teamsForGruop.remove(at: randomInt)
+                    
+                    if partialGruop.count == 4 {
+                        gruops.append(partialGruop)
+                        partialGruop.removeAll()
+                    }
                 }
+            }else{
+               print("No es posible tener menos de 4 equipos por grupo")
             }
-        }
         return gruops
     }
     
@@ -145,22 +147,27 @@ public class Groups{
     
     func classifiedTeams(wordCupGruops: [Groups] ) {
         
-        var finalTeams = [WorldCupTeam.ParticipatedCountries:Int]()
-        
         for gruop in wordCupGruops{
             
+            var finalTeams = [WorldCupTeam.ParticipatedCountries:Int]()
+            
             var table = getPointsByGruop(gruop: gruop)
+            
+            print("\nSelecciones clasificadas Grupo \(gruop.groupName) = ")
             
             for _ in 0...1{
                 let greatestValue = table.max(by:{$0.value < $1.value})
                 table.removeValue(forKey: greatestValue!.key)
+                
                 finalTeams[greatestValue!.key] = greatestValue!.value
+    
             }
+            for (key, value) in finalTeams.reversed(){
+                print("\(key), Puntos: \(value)")
+            }
+    
         }
-        print("Selecciones clasificadas = ")
-        for (key, value) in finalTeams {
-            print("\(key), Puntos: \(value)")
-        }
+        
     }
 }
 
@@ -267,9 +274,19 @@ var participant_20 = WorldCupParticipant(fullName: "Diego Costa", countryTeam: "
 var participant_21 = WorldCupParticipant(fullName: "Fernando Manuel Costa Santos", countryTeam: "Poland", rollType: .coach)
 var participant_22 = WorldCupParticipant(fullName: "Luis Enrique", countryTeam: "England", rollType: .coach)
 var participant_23 = WorldCupParticipant(fullName: "Jordi Alba", countryTeam: "England", rollType: .footballPlayer)
-var participant_24 = WorldCupParticipant(fullName: "Robert Sanchez", countryTeam: "England", rollType: .footballPlayer)
-
-    
+var participant_24 = WorldCupParticipant(fullName: "JUGADOR 1", countryTeam: "England", rollType: .footballPlayer)
+var participant_25 = WorldCupParticipant(fullName: "JUGADOR 2", countryTeam: "Morocco", rollType: .coach)
+var participant_26 = WorldCupParticipant(fullName: "JUGADOR 3", countryTeam: "Morocco", rollType: .footballPlayer)
+var participant_27 = WorldCupParticipant(fullName: "JUGADOR 4", countryTeam: "Morocco", rollType: .footballPlayer)
+var participant_28 = WorldCupParticipant(fullName: "JUGADOR 2", countryTeam: "France", rollType: .coach)
+var participant_29 = WorldCupParticipant(fullName: "JUGADOR 3", countryTeam: "France", rollType: .footballPlayer)
+var participant_30 = WorldCupParticipant(fullName: "JUGADOR 4", countryTeam: "France", rollType: .footballPlayer)
+var participant_31 = WorldCupParticipant(fullName: "JUGADOR 2", countryTeam: "Croatia", rollType: .coach)
+var participant_32 = WorldCupParticipant(fullName: "JUGADOR 3", countryTeam: "Croatia", rollType: .footballPlayer)
+var participant_33 = WorldCupParticipant(fullName: "JUGADOR 4", countryTeam: "Croatia", rollType: .footballPlayer)
+var participant_34 = WorldCupParticipant(fullName: "JUGADOR 2", countryTeam: "Australia", rollType: .coach)
+var participant_35 = WorldCupParticipant(fullName: "JUGADOR 3", countryTeam: "Australia", rollType: .footballPlayer)
+var participant_36 = WorldCupParticipant(fullName: "JUGADOR 4", countryTeam: "Australia", rollType: .footballPlayer)
     
 let argentinaTeam = WorldCupTeam(countryTeam: .Argentina, statusEliminated: false , membersCountryTeam:[participant_1,participant_2,participant_3])
 let brazilTeam = WorldCupTeam(countryTeam: .Brazil, statusEliminated: false, membersCountryTeam: [participant_4,participant_5,participant_6])
@@ -279,10 +296,12 @@ let switzerlandTeam = WorldCupTeam(countryTeam: .Switzerland, statusEliminated: 
 let costaRicaTeam = WorldCupTeam(countryTeam: .CostaRica, statusEliminated: false, membersCountryTeam: [participant_16,participant_17,participant_18])
 let polandTeam = WorldCupTeam(countryTeam: .Poland, statusEliminated: false, membersCountryTeam: [participant_19,participant_20,participant_21])
 let englandTeam = WorldCupTeam(countryTeam: .England, statusEliminated: false, membersCountryTeam: [participant_22,participant_23,participant_24])
+let moroccoTeam = WorldCupTeam(countryTeam: .Morocco, statusEliminated: false, membersCountryTeam: [participant_25,participant_26,participant_27])
+let franceTeam = WorldCupTeam(countryTeam: .France, statusEliminated: false, membersCountryTeam: [participant_28,participant_29,participant_30])
+let croatiaTeam = WorldCupTeam(countryTeam: .Croatia, statusEliminated: false, membersCountryTeam: [participant_31,participant_32,participant_33])
+let australiaTeam = WorldCupTeam(countryTeam: .Australia, statusEliminated: false, membersCountryTeam: [participant_28,participant_29,participant_30])
     
-    
-    
-let wordCup = WorldCup(countryTeams: [argentinaTeam,brazilTeam,portugalTeam,spainTeam,switzerlandTeam,polandTeam,englandTeam,costaRicaTeam])
+let wordCup = WorldCup(countryTeams: [argentinaTeam,brazilTeam,portugalTeam,spainTeam,switzerlandTeam,polandTeam,englandTeam,costaRicaTeam,moroccoTeam, franceTeam, croatiaTeam, australiaTeam])
 
 
 
